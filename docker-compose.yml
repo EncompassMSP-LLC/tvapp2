@@ -32,8 +32,13 @@ services:
       # image: git.binaryninja.net/binaryninja/tvapp2:latest        # Image: Gitea
       # image: tvapp2:latest                                        # Image: Locally built
         hostname: tvapp2
+        restart: unless-stopped
+        ports:
+            - "4124:4124"
         environment:
-            TZ: "Etc/UTC"
+            - TZ=Etc/UTC
+            - DIR_RUN=/usr/bin/app
+            - WEB_PUBLIC_URL=https://tvapp.locallift-marketing.com
         volumes:
             - /etc/timezone:/etc/timezone:ro
             - /etc/localtime:/etc/localtime:ro

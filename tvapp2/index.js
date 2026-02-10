@@ -116,6 +116,7 @@ const envWebFolder = process.env.WEB_FOLDER || 'www';
 const envHdhrPort = process.env.HDHR_PORT || `6077`;
 const envWebEncoding = process.env.WEB_ENCODING || 'deflate, br';
 const envProxyHeader = process.env.WEB_PROXY_HEADER || 'x-forwarded-for';
+const envWebPublicUrl = process.env.WEB_PUBLIC_URL || null;
 const envHealthTimer = process.env.HEALTH_TIMER || 600000;
 const envTaskCronSync = process.env.TASK_CRON_SYNC || '0 0 */3 * *';
 const envGitSHA1 = process.env.GIT_SHA1 || '0000000000000000000000000000000000000000';
@@ -1513,12 +1514,22 @@ async function serveHealthCheck( req, res )
     Rewrites the URLs
 */
 
+function getBaseUrl( req )
+{
+    if ( envWebPublicUrl )
+    {
+        const url = envWebPublicUrl.replace( /\/+$/, '' );
+        return url;
+    }
+    const protocol = req.headers['x-forwarded-proto']?.split( ',' )[0] || ( req.socket.encrypted ? 'https' : 'http' );
+    const host = req.headers.host;
+    return `${ protocol }://${ host }`;
+}
+
 async function rewriteM3U( originalUrl, req )
 {
     const rawData = await fetchRemote( originalUrl, req );
-    const protocol = req.headers['x-forwarded-proto']?.split( ',' )[0] || ( req.socket.encrypted ? 'https' : 'http' );
-    const host = req.headers.host;
-    const baseUrl = `${ protocol }://${ host }`;
+    const baseUrl = getBaseUrl( req );
     const playlistContent = rawData.toString( 'utf8' );
     return playlistContent
         .replace( /URI="([^"]+)"/g, ( match, uri ) =>
@@ -1550,7 +1561,7 @@ async function serveM3U( res, req )
     {
         const protocol = req.headers['x-forwarded-proto']?.split( ',' )[0] || ( req.socket.encrypted ? 'https' : 'http' );
         const host = req.headers.host;
-        const baseUrl = `${ protocol }://${ host }`;
+        const baseUrl = getBaseUrl( req );
         const formattedContent = fs.readFileSync( FILE_M3U, 'utf-8' );
         const updatedContent = formattedContent
             .replace( /(https?:\/\/[^\s]*thetvapp[^\s]*)/g, ( fullUrl ) =>
@@ -1884,6 +1895,8 @@ async function initialize()
         Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `WEB_FOLDER` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envWebFolder }` ) );
         Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `WEB_ENCODING` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envWebEncoding }` ) );
         Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `WEB_PROXY_HEADER` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envProxyHeader }` ) );
+        if ( envWebPublicUrl )
+            Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `WEB_PUBLIC_URL` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envWebPublicUrl }` ) );
         Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `STREAM_QUALITY` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envStreamQuality }` ) );
         Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `API_KEY` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envApiKey }` ) );
         Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `FILE_URL` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envFileURL }` ) );

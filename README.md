@@ -184,6 +184,7 @@ The following is a list of environment variables you can declare within your `do
 | `WEB_FOLDER` | `www` | Internal container folder to keep TVApp2 web files in. <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 | `WEB_ENCODING` | `deflate, br` | Defines the HTTP `Accept-Encoding` request and response header. This value specifies what content encoding the sender can understand<br /><br />Gzip compression can be enabled by specifying `'gzip, deflate, br'`, however, [it may break Jellyfin users](#build-error-err-27-jellyfinlivetvguideguidemanager-error-getting-programs-for-channel-xxxxxxxxxxxxxxx-source-2-systemxmlxmlexception--hexadecimal-value-0x1f-is-an-invalid-character-line-1-position-1). |
 | `WEB_PROXY_HEADER` | `x-forwarded-for` | Defines the header to look for when finding a client's IP address. Used to get a client's IP when behind a reverse proxy or Cloudflare |
+| `WEB_PUBLIC_URL` | *(empty)* | Public base URL for playlist/channel links (e.g. `https://tvapp.example.com` or `http://192.168.1.10:4124`). When set, M3U channel URLs use this instead of the request host. Use when behind a reverse proxy or when accessing from other devices. |
 | `HDHR_PORT` | `6077` | HDHomeRun server default listening port |
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
 | `FILE_URL` | `urls.txt` | Filename for `urls.txt` cache file |
@@ -1319,6 +1320,7 @@ This docker container contains the following env variables:
 | `WEB_FOLDER` | `www` | Internal container folder to keep TVApp2 web files in. <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 | `WEB_ENCODING` | `deflate, br` | Defines the HTTP `Accept-Encoding` request and response header. This value specifies what content encoding the sender can understand<br /><br />Gzip compression can be enabled by specifying `'gzip, deflate, br'`, however, [it may break Jellyfin users](#build-error-err-27-jellyfinlivetvguideguidemanager-error-getting-programs-for-channel-xxxxxxxxxxxxxxx-source-2-systemxmlxmlexception--hexadecimal-value-0x1f-is-an-invalid-character-line-1-position-1). |
 | `WEB_PROXY_HEADER` | `x-forwarded-for` | Defines the header to look for when finding a client's IP address. Used to get a client's IP when behind a reverse proxy or Cloudflare |
+| `WEB_PUBLIC_URL` | *(empty)* | Public base URL for playlist/channel links (e.g. `https://tvapp.example.com` or `http://192.168.1.10:4124`). When set, M3U channel URLs use this instead of the request host. Use when behind a reverse proxy or when accessing from other devices. |
 | `HDHR_PORT` | `6077` | HDHomeRun server default listening port |
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
 | `FILE_URL` | `urls.txt` | Filename for `urls.txt` cache file |

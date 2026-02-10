@@ -1,0 +1,10 @@
+# #
+#   TVApp2 › Caddy › Reverse proxy (host)
+#
+#   Run: caddy run --config Caddyfile
+#   Or: caddy start --config Caddyfile
+#
+
+tvapp.locallift-marketing.com {
+    reverse_proxy localhost:4124
+}
